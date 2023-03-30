@@ -1,8 +1,21 @@
+//React
 import { useState } from "react";
 
 //External
 import { Configuration, OpenAIApi } from "openai";
-import { Button, TextField, LinearProgress, Box,Stack , Typography} from "@mui/material";
+import {
+  Button,
+  TextField,
+  LinearProgress,
+  Box,
+  Stack,
+  Typography,
+} from "@mui/material";
+import TEST from "./assets/B.jpg";
+import Loader from "./assets/loader.gif";
+import React from "react";
+import Delay from "./Utils/Delay";
+import "./App.css";
 
 const App = () => {
   const [prompt, setPrompt] = useState<string>("");
@@ -13,19 +26,30 @@ const App = () => {
 
   const [isLoading, setLoading] = useState<boolean>(true);
   const [texthid, setTexthid] = useState<boolean>(false);
+  const [state, setState] = useState("Listening");
+  
 
   const configuration = new Configuration({
-    apiKey: "______",
+    apiKey: "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",
+    // apiKey: "_________",
   });
   //process.env.REACT_APP_OPENAI_API_KEY,
   const openai = new OpenAIApi(configuration);
 
-  
   const handleclick = () => {
     console.log("click");
+    // setResult(Loader);
     generateImage();
     generateText();
+    HiddenManager();
   };
+
+  const HiddenManager = () => {
+    var resElement = document.getElementById("Results");
+    resElement?.classList.remove("hidden");
+    }
+    
+
 
   const generateImage = async () => {
     setLoading(false);
@@ -37,6 +61,7 @@ const App = () => {
     setLoading(true);
     setImagehid(false);
     setResult(response.data?.data[0]?.url || "");
+    // setResult(result);
   };
 
   const generateText = async () => {
@@ -59,41 +84,54 @@ const App = () => {
 
   return (
     <Stack>
-      <Box hidden={isLoading} sx={{ width: "100%", marginBottom: "1rem" }}>
-        <LinearProgress />
-      </Box>
-      <Typography>How to survive to</Typography>
-      <TextField
-        style={{ width: "80%", marginTop: "3%" }}
-        id="filled-basic"
-        label="Entrez votre prompt pour l'image ou votre demande de texte"
-        variant="filled"
-        className="app-input"
-        onChange={(e) => {
-          setPrompt(e.target.value);
-          setPrompta(e.target.value);
-        }}
-      />
-      <br />
-      <Button
-        sx={{ marginTop: "3%", backgroundColor: "#683bdb" }}
-        variant="contained"
-        size="medium"
-        onClick={handleclick}
-      >
-        Show me
-      </Button>
-      {/* resultat de l'image */}
-      <Box hidden={imagehid}>
-        <footer>
-          <img className="result-image" src={result} />
-        </footer>
-      </Box>
-      <br />
-      {/* resultat du texte  */}
-      <Box hidden={texthid} sx={{ marginTop: "3%" }}>
-        <footer style={{ width: "80%", margin: "auto" }}>{resulta} </footer>
-      </Box>
+      <div className="Savior">
+        {/* <Box className="Loader" hidden={isLoading} sx={{ width: "100%", marginBottom: "1rem" }}>
+          <LinearProgress />
+        </Box> */}
+        <div className="Main">
+          <h1 className="Title">How to survive to</h1>
+          <TextField
+            style={{ width: "80%", marginTop: "3%" }}
+            id="filled-basic"
+            label="Ask the Guide what to survive to"
+            variant="filled"
+            className="app-input"
+            onChange={(e) => {
+              setPrompt(e.target.value);
+              setPrompta(e.target.value);
+            }}
+          />
+
+          <br />
+          <Button
+            href="#Results"
+            className="app-button"
+            sx={{ marginTop: "3%", backgroundColor: "#054622" }}
+            variant="contained"
+            size="large"
+            onClick={handleclick}
+          >
+            Show me
+          </Button>
+        </div>
+        {/* resultat de l'image */}
+        <div className="Results hidden" id="Results">
+          {/* <img className="result-image" src={result} /> */}
+          <div className="img-container">
+            <img className="result-image" src={result} />
+          </div>
+
+          <br />
+          {/* resultat du texte  */}
+          <div className="txt-container">
+            <h1 className="result-text-title">Answer from the Guide :</h1>
+            {/* <p className="result-text">
+              {resulta}
+            </p> */}
+            <p className="result-text">{resulta}</p>
+          </div>
+        </div>
+      </div>
     </Stack>
   );
 };
